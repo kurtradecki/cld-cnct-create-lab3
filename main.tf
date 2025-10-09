@@ -69,7 +69,7 @@ resource "google_compute_security_policy" "cloudarmor_policy" {
   name    = var.cloudarmor_policy_name
   rule {
     action   = "allow"
-    priority = "10000"
+    priority = "100"
     match {
       versioned_expr = "SRC_IPS_V1"
       config {
