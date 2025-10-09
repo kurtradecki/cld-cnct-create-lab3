@@ -24,12 +24,23 @@ cloud_armor_allowed_ips = ["*"]  # eg ["1.2.3.4","5.6.7.8"] - add IPs (or * for 
 enable_http             = true  # true to create HTTP & HTTPS frontends, false to create only HTTPS frontend
 
 # No need to change anything below this line unless you want to change resource naming
-cloudrun_neg_name_prefix      = "srvrlessneg-cloudrun"
-cloudrun_svc_name_prefix      = "cloudrun-example"
-url_map_name                  = "lb-ga" # becomes the load balancer name for an application load balancer
-cert_name_prefix              = "cert"
-lb_static_ip_name_prefix      = "static-ip"
-cloudarmor_policy_name_prefix = "cldarmr-pol"
-forwarding_rule_name_prefix   = "fr"
-proxy_http_name_prefix        = "proxy-http"
-backend_service_name_prefix   = "be"
+## Recreating Lab 1 Task 1
+lb_static_ip_name      = "public-ip"  
+cert_name              = "cert"  
+
+## Recreating Lab 1 Task 2
+cloudrun_svc_name      = "hello"
+
+## Recreating Lab 1 Task 3
+cloudarmor_policy_name = "cldarm-policy"
+
+## Recreating Lab 1 Task 4
+cloudrun_neg_name      = "srvrless-neg"
+url_map_name           = "lb" # becomes the load balancer name for an application load balancer
+forwarding_rule_name   = "fr"
+proxy_http_name        = "proxy-http"
+backend_service_name   = "lb-backend-svc"
+
+## Recreating Lab 1 Task 5
+vpc_name               = "vpc"
+subnet_name            = "subnet"
