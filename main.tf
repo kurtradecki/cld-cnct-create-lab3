@@ -45,7 +45,7 @@ resource "time_sleep" "wait_60_seconds" {
 # ======= Resources to add =======
 resource "google_compute_global_address" "lb_static_ip" {
   project      = var.project_id
-  name         = "${var.lb_static_ip_name_prefix}-${var.url_map_name}${var.iteration}"
+  name         = var.lb_static_ip_name
   address_type = "EXTERNAL"
   ip_version   = "IPV4"
   depends_on   = [time_sleep.wait_60_seconds]
@@ -54,7 +54,7 @@ resource "google_compute_global_address" "lb_static_ip" {
 # create certificate
 resource "google_compute_managed_ssl_certificate" "cert" {
   project = var.project_id
-  name    = "${var.cert_name_prefix}-${var.url_map_name}${var.iteration}"
+  name    = var.cert_name
   managed {
     domains = ["${google_compute_global_address.lb_static_ip.address}.nip.io"]
   }
@@ -66,7 +66,7 @@ resource "google_compute_managed_ssl_certificate" "cert" {
 resource "google_compute_security_policy" "cloudarmor_policy" {
   count   = var.enable_cloud_armor ? 1 : 0
   project = var.project_id
-  name    = "${var.cloudarmor_policy_name_prefix}-${var.url_map_name}"
+  name    = var.cloudarmor_policy_name
   rule {
     action   = "allow"
     priority = "10000"
@@ -96,7 +96,7 @@ resource "google_compute_security_policy" "cloudarmor_policy" {
 
 resource "google_cloud_run_service" "cloudrun_svc" {
   project  = var.project_id
-  name     = "${var.cloudrun_svc_name_prefix}-${var.url_map_name}${var.iteration}"
+  name     = var.cloudrun_svc_name
   location = var.gcp_region
   metadata {
     annotations = {
@@ -133,7 +133,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
 
 resource "google_compute_region_network_endpoint_group" "cloudrun_neg" {
   project               = var.project_id
-  name                  = "${var.cloudrun_neg_name_prefix}-${var.url_map_name}${var.iteration}"
+  name                  = var.cloudrun_neg_name
   network_endpoint_type = "SERVERLESS"
   region                = var.gcp_region
   cloud_run {
@@ -145,7 +145,7 @@ resource "google_compute_region_network_endpoint_group" "cloudrun_neg" {
 # backend service with custom request and response headers
 resource "google_compute_backend_service" "backend_service" {
   project               = var.project_id
-  name                  = "${var.backend_service_name_prefix}-${var.url_map_name}${var.iteration}"
+  name                  = var.backend_service_name
   load_balancing_scheme = "EXTERNAL_MANAGED"
   security_policy       = var.enable_cloud_armor ? google_compute_security_policy.cloudarmor_policy[0].id : ""
   backend {
@@ -158,7 +158,7 @@ resource "google_compute_backend_service" "backend_service" {
 # url map
 resource "google_compute_url_map" "url_map" {
   project         = var.project_id
-  name            = "${var.url_map_name}${var.iteration}"
+  name            = var.url_map_name
   default_service = google_compute_backend_service.backend_service.id
   depends_on      = [time_sleep.wait_60_seconds]
 }
@@ -166,7 +166,7 @@ resource "google_compute_url_map" "url_map" {
 # https proxy
 resource "google_compute_target_https_proxy" "proxy_https" {
   project          = var.project_id
-  name             = "${var.proxy_http_name_prefix}s-${var.url_map_name}${var.iteration}"
+  name             = "${var.proxy_http_name}s"
   url_map          = google_compute_url_map.url_map.id
   ssl_certificates = [google_compute_managed_ssl_certificate.cert.id]
   depends_on       = [time_sleep.wait_60_seconds]
@@ -175,7 +175,7 @@ resource "google_compute_target_https_proxy" "proxy_https" {
 # forwarding rule for https
 resource "google_compute_global_forwarding_rule" "forwarding_rule_https" {
   project               = var.project_id
-  name                  = "${var.forwarding_rule_name_prefix}-https-${var.url_map_name}${var.iteration}"
+  name                  = "${var.forwarding_rule_name}-https"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "443"
@@ -188,7 +188,7 @@ resource "google_compute_global_forwarding_rule" "forwarding_rule_https" {
 resource "google_compute_target_http_proxy" "proxy_http" {
   count      = var.enable_http ? 1 : 0
   project    = var.project_id
-  name       = "${var.proxy_http_name_prefix}-${var.url_map_name}${var.iteration}"
+  name       = var.proxy_http_name
   url_map    = google_compute_url_map.url_map.id
   depends_on = [time_sleep.wait_60_seconds]
 }
@@ -197,11 +197,29 @@ resource "google_compute_target_http_proxy" "proxy_http" {
 resource "google_compute_global_forwarding_rule" "forwarding_rule_http" {
   count                 = var.enable_http ? 1 : 0
   project               = var.project_id
-  name                  = "${var.forwarding_rule_name_prefix}-http-${var.url_map_name}${var.iteration}"
+  name                  = "${var.forwarding_rule_name}-http"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "80"
   target                = google_compute_target_http_proxy.proxy_http[0].id
   ip_address            = google_compute_global_address.lb_static_ip.id
   depends_on            = [time_sleep.wait_60_seconds]
+}
+
+
+# VPC
+resource "google_compute_network" "vpc" {
+ name                            = var.vpc_name
+ auto_create_subnetworks         = false
+ mtu                             = 1460
+ routing_mode                    = "GLOBAL"
+ delete_default_routes_on_create = false
+}
+
+# Subnet
+resource "google_compute_subnetwork" "subnet1-vpc-hub1" {
+ name          = var.subnet_name
+ ip_cidr_range = "10.1.0.0/16"
+ region        = var.gcp_region
+ network       = google_compute_network.vpc.id
 }
