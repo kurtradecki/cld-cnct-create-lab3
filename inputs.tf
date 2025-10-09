@@ -58,10 +58,6 @@ variable "cloudrun_svc_name" {
   type = string
 }
 
-variable "iteration" {
-  type = string
-}
-
 variable "enable_http" {
   type = bool
 }
