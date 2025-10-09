@@ -26,35 +26,35 @@ variable "url_map_name" {
   type = string
 }
 
-variable "cert_name_prefix" {
+variable "cert_name" {
   type = string
 }
 
-variable "lb_static_ip_name_prefix" {
+variable "lb_static_ip_name" {
   type = string
 }
 
-variable "cloudarmor_policy_name_prefix" {
+variable "cloudarmor_policy_name" {
   type = string
 }
 
-variable "forwarding_rule_name_prefix" {
+variable "forwarding_rule_name" {
   type = string
 }
 
-variable "proxy_http_name_prefix" {
+variable "proxy_http_name" {
   type = string
 }
 
-variable "backend_service_name_prefix" {
+variable "backend_service_name" {
   type = string
 }
 
-variable "cloudrun_neg_name_prefix" {
+variable "cloudrun_neg_name" {
   type = string
 }
 
-variable "cloudrun_svc_name_prefix" {
+variable "cloudrun_svc_name" {
   type = string
 }
 
@@ -72,4 +72,12 @@ variable "enable_cloud_armor" {
 
 variable "cloud_armor_allowed_ips" {
   type = list(string)
+}
+
+variable "vpc_name" {
+  type = string
+}
+
+variable "subnet_name" {
+  type = string
 }
