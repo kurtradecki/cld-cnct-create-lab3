@@ -43,6 +43,7 @@ resource "time_sleep" "wait_60_seconds" {
 
 
 # ======= Resources to add =======
+# --- Public IP for load balancer ---
 resource "google_compute_global_address" "lb_static_ip" {
   project      = var.project_id
   name         = var.lb_static_ip_name
@@ -51,7 +52,7 @@ resource "google_compute_global_address" "lb_static_ip" {
   depends_on   = [time_sleep.wait_60_seconds]
 }
 
-# create certificate
+# --- Cert for load balancer ---
 resource "google_compute_managed_ssl_certificate" "cert" {
   project = var.project_id
   name    = var.cert_name
@@ -62,7 +63,7 @@ resource "google_compute_managed_ssl_certificate" "cert" {
 }
 
 
-# create Cloud Armor policy for only allowed IPs
+# --- Cloud Armor policy for only allowed IPs ---
 resource "google_compute_security_policy" "cloudarmor_policy" {
   count   = var.enable_cloud_armor ? 1 : 0
   project = var.project_id
@@ -92,8 +93,7 @@ resource "google_compute_security_policy" "cloudarmor_policy" {
   depends_on = [time_sleep.wait_60_seconds]
 }
 
-### create Load balancer with backend … multiple resources
-
+# --- Cloud Run service ---
 resource "google_cloud_run_service" "cloudrun_svc" {
   project  = var.project_id
   name     = var.cloudrun_svc_name
@@ -113,6 +113,7 @@ resource "google_cloud_run_service" "cloudrun_svc" {
   depends_on = [time_sleep.wait_60_seconds]
 }
 
+# --- Set Cloud Run Authentication to Allow public access --- 
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
@@ -131,6 +132,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   depends_on  = [time_sleep.wait_60_seconds]
 }
 
+# --- Serverless Networking Endpoint Group (NEG) --- 
 resource "google_compute_region_network_endpoint_group" "cloudrun_neg" {
   project               = var.project_id
   name                  = var.cloudrun_neg_name
@@ -142,7 +144,7 @@ resource "google_compute_region_network_endpoint_group" "cloudrun_neg" {
   depends_on = [time_sleep.wait_60_seconds]
 }
 
-# backend service with custom request and response headers
+# --- Load Balancer backend service --- 
 resource "google_compute_backend_service" "backend_service" {
   project               = var.project_id
   name                  = var.backend_service_name
@@ -155,7 +157,7 @@ resource "google_compute_backend_service" "backend_service" {
   depends_on = [time_sleep.wait_60_seconds]
 }
 
-# url map
+# --- Load Balancer url map --- 
 resource "google_compute_url_map" "url_map" {
   project         = var.project_id
   name            = var.url_map_name
@@ -163,7 +165,7 @@ resource "google_compute_url_map" "url_map" {
   depends_on      = [time_sleep.wait_60_seconds]
 }
 
-# https proxy
+# --- Load Balancer https proxy --- 
 resource "google_compute_target_https_proxy" "proxy_https" {
   project          = var.project_id
   name             = "${var.proxy_http_name}s"
@@ -172,7 +174,7 @@ resource "google_compute_target_https_proxy" "proxy_https" {
   depends_on       = [time_sleep.wait_60_seconds]
 }
 
-# forwarding rule for https
+# --- Load Balancer forwarding rule for https --- 
 resource "google_compute_global_forwarding_rule" "forwarding_rule_https" {
   project               = var.project_id
   name                  = "${var.forwarding_rule_name}-https"
@@ -184,7 +186,7 @@ resource "google_compute_global_forwarding_rule" "forwarding_rule_https" {
   depends_on            = [time_sleep.wait_60_seconds]
 }
 
-# http proxy
+# --- Load Balancer http proxy --- 
 resource "google_compute_target_http_proxy" "proxy_http" {
   count      = var.enable_http ? 1 : 0
   project    = var.project_id
@@ -193,7 +195,7 @@ resource "google_compute_target_http_proxy" "proxy_http" {
   depends_on = [time_sleep.wait_60_seconds]
 }
 
-# forwarding rule for http
+# --- Load Balancer forwarding rule for http --- 
 resource "google_compute_global_forwarding_rule" "forwarding_rule_http" {
   count                 = var.enable_http ? 1 : 0
   project               = var.project_id
@@ -207,7 +209,7 @@ resource "google_compute_global_forwarding_rule" "forwarding_rule_http" {
 }
 
 
-# VPC
+#  --- VPC --- 
 resource "google_compute_network" "vpc" {
  name                            = var.vpc_name
  auto_create_subnetworks         = false
@@ -216,10 +218,86 @@ resource "google_compute_network" "vpc" {
  delete_default_routes_on_create = false
 }
 
-# Subnet
+#  --- Subnet ---
 resource "google_compute_subnetwork" "subnet1-vpc-hub1" {
  name          = var.subnet_name
  ip_cidr_range = "10.1.0.0/16"
  region        = var.gcp_region
  network       = google_compute_network.vpc.id
+}
+
+
+# --- Populate BQ Dataset ---
+resource "google_storage_bucket" "my_bucket" {
+ name          = var.project_id
+ location      = "US"
+ storage_class = "STANDARD"
+ uniform_bucket_level_access = true
+}
+
+resource "google_storage_bucket_object" "students_object" {
+ name         = "students.csv"
+ source       = "students.csv"
+ content_type = "text/plain"
+ bucket       = google_storage_bucket.my_bucket.id
+}
+
+resource "google_storage_bucket_object" "nobels_object" {
+ name         = "nobels.csv"
+ source       = "nobels.csv"
+ content_type = "text/plain"
+ bucket       = google_storage_bucket.my_bucket.id
+}
+
+resource "google_bigquery_dataset" "sample_dataset" {
+  dataset_id                  = "sample_dataset"
+  friendly_name               = "sample_dataset"
+  description                 = "Sample Dataset"
+  location                    = "US"
+}
+
+resource "google_bigquery_job" "nobels_load" {
+  job_id     = "nobels_load"
+
+  load {
+    source_uris = [
+      "gs://${var.gcp_project_id}/nobels.csv",
+    ]
+
+    destination_table {
+      project_id = var.gcp_project_id
+      dataset_id = google_bigquery_dataset.sample_dataset.dataset_id
+      table_id   = "nobels"
+    }
+
+    skip_leading_rows = 1
+    write_disposition = "WRITE_TRUNCATE"
+    autodetect = true
+  }
+  
+  depends_on = [ google_bigquery_dataset.sample_dataset, google_storage_bucket_object.nobels_object ]
+
+
+}
+
+resource "google_bigquery_job" "students_load" {
+  job_id     = "students_load"
+
+  load {
+    source_uris = [
+      "gs://${var.gcp_project_id}/students.csv",
+    ]
+
+    destination_table {
+      project_id = var.gcp_project_id
+      dataset_id = google_bigquery_dataset.sample_dataset.dataset_id
+      table_id   = "students"
+    }
+
+    skip_leading_rows = 1
+    write_disposition = "WRITE_TRUNCATE"
+    autodetect = true
+  }
+  
+  depends_on = [ google_bigquery_dataset.sample_dataset, google_storage_bucket_object.students_object ]
 }
