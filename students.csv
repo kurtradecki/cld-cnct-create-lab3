@@ -1,0 +1,51 @@
+StudentID,EnrollmentTerm,School,Program,Specialization,EnrollmentStatus,EnrollmentType,SSN,Age,Gender,StateOfResidence,CreditsAttemptedTerm,CreditsCompletedTerm,CumulativeGPA,StudentSatisfactionScore,TuitionPaidTerm
+STU001,Fall 2024,Business,MBA,Finance,Enrolled,Full Time,123-45-6789,35,Male,CA,9,9,3.6,4,7500
+STU002,Fall 2024,Technology,BS in IT,Cybersecurity,Enrolled,Part Time,987-65-4320,28,Female,TX,6,6,3.8,5,5000
+STU003,Fall 2024,Nursing,BSN,,Enrolled,Full Time,987-65-4321,22,Female,NY,12,12,3.9,4,8000
+STU004,Fall 2024,Arts & Sciences,BA in Psychology,,Enrolled,Part Time,987-65-4322,45,Male,FL,3,3,3.5,3,2500
+STU005,Spring 2025,Business,Master of Business Administration,,Enrolled,Full Time,987-65-4323,31,Female,IL,9,9,3.7,5,7500
+STU006,Spring 2025,Technology,MS in Data Analytics,,Enrolled,Part Time,987-65-4324,29,Male,WA,6,6,3.9,4,5500
+STU007,Spring 2025,Nursing,MSN,Nursing Education,Enrolled,Full Time,987-65-4325,40,Female,PA,9,9,4,5,8500
+STU008,Fall 2024,Business,BS in Business Administration,Marketing,Enrolled,Part Time,987-65-4326,24,Male,GA,6,3,3.2,3,5000
+STU009,Fall 2024,Technology,BS in IT,,Enrolled,Full Time,987-65-4327,33,Female,CO,12,12,3.6,4,8000
+STU010,Spring 2025,Arts & Sciences,MA in History,,Withdrawn,Part Time,987-65-4328,50,Male,OH,3,0,2.9,2,1000
+STU011,Spring 2025,Business,MBA,Healthcare Management,Enrolled,Full Time,987-65-4329,38,Female,CA,9,9,3.8,5,7500
+STU012,Spring 2025,Technology,BS in IT,Software Development,Enrolled,Part Time,000-00-0000,26,Male,TX,6,6,3.7,4,5000
+STU013,Fall 2024,Nursing,BSN,,Enrolled,Full Time,111-11-1111,23,Female,NY,12,9,3.5,4,8000
+STU014,Fall 2024,Arts & Sciences,BA in Communication,,Enrolled,Part Time,222-22-2222,42,Male,FL,3,3,3.3,3,2500
+STU015,Spring 2025,Business,BS in Business Administration,,Enrolled,Full Time,333-33-3333,30,Female,IL,12,12,3.9,5,8000
+STU016,Spring 2025,Technology,MS in Cybersecurity,,Enrolled,Part Time,444-44-4444,32,Male,WA,6,6,4,5,5500
+STU017,Spring 2025,Nursing,DNP,,Completed,Full Time,555-55-5555,48,Female,PA,6,6,3.9,5,4000
+STU018,Fall 2024,Business,MBA,Project Management,Enrolled,Part Time,666-66-6666,27,Male,GA,6,6,3.4,4,5000
+STU019,Fall 2024,Technology,BS in IT,Network Administration,Enrolled,Full Time,777-77-7777,36,Female,CO,12,12,3.7,4,8000
+STU020,Spring 2025,Arts & Sciences,BA in English,,Enrolled,Part Time,888-88-8888,55,Male,OH,3,3,3.6,3,2500
+STU021,Spring 2025,Business,MBA,,Enrolled,Full Time,999-99-9999,33,Female,CA,9,9,3.9,5,7500
+STU022,Spring 2025,Technology,BS in IT,Data Science,Enrolled,Part Time,101-01-0001,25,Male,TX,6,6,3.8,4,5000
+STU023,Fall 2024,Nursing,BSN,,Enrolled,Full Time,202-02-0002,21,Female,NY,12,12,4,5,8000
+STU024,Fall 2024,Arts & Sciences,BA in Sociology,,Enrolled,Part Time,303-03-0003,40,Male,FL,3,3,3.4,3,2500
+STU025,Spring 2025,Business,BS in Business Administration,Human Resources,Enrolled,Full Time,404-04-0004,28,Female,IL,12,12,3.7,4,8000
+STU026,Spring 2025,Technology,MS in Information Technology,,Enrolled,Part Time,505-05-0005,35,Male,WA,6,6,3.8,4,5500
+STU027,Spring 2025,Nursing,MSN,Family Nurse Practitioner,Enrolled,Full Time,606-06-0006,43,Female,PA,9,9,3.9,5,8500
+STU028,Fall 2024,Business,MBA,,Enrolled,Part Time,707-07-0007,29,Male,GA,6,6,3.5,4,5000
+STU029,Fall 2024,Technology,BS in IT,,Enrolled,Full Time,808-08-0008,31,Female,CO,12,12,3.6,4,8000
+STU030,Spring 2025,Arts & Sciences,MA in Creative Writing,,Enrolled,Part Time,909-09-0009,52,Male,OH,3,3,3.7,3,2500
+STU031,Spring 2025,Business,MBA,Finance,Enrolled,Full Time,321-54-9876,37,Female,CA,9,9,3.8,5,7500
+STU032,Spring 2025,Technology,BS in IT,Cybersecurity,Enrolled,Part Time,654-32-1987,27,Male,TX,6,6,3.9,4,5000
+STU033,Fall 2024,Nursing,BSN,,Enrolled,Full Time,147-25-3698,24,Female,NY,12,12,3.7,4,8000
+STU034,Fall 2024,Arts & Sciences,BA in Psychology,,Enrolled,Part Time,258-36-4710,48,Male,FL,3,3,3.5,3,2500
+STU035,Spring 2025,Business,Master of Business Administration,,Enrolled,Full Time,369-47-5821,34,Female,IL,9,9,3.6,4,7500
+STU036,Spring 2025,Technology,MS in Data Analytics,,Enrolled,Part Time,741-85-2963,30,Male,WA,6,6,3.8,5,5500
+STU037,Spring 2025,Nursing,MSN,Nursing Informatics,Enrolled,Full Time,852-96-3174,41,Female,PA,9,9,4,5,8500
+STU038,Fall 2024,Business,BS in Business Administration,Operations,Enrolled,Part Time,963-17-4285,23,Male,GA,6,6,3.3,3,5000
+STU039,Fall 2024,Technology,BS in IT,Web Development,Enrolled,Full Time,159-26-3847,32,Female,CO,12,12,3.5,4,8000
+STU040,Spring 2025,Arts & Sciences,BA in History,,Withdrawn,Part Time,753-31-5796,49,Male,OH,3,0,3,2,1000
+STU041,Spring 2025,Business,MBA,Project Management,Enrolled,Full Time,357-42-4682,39,Female,CA,9,9,3.9,5,7500
+STU042,Spring 2025,Technology,BS in IT,Software Development,Enrolled,Part Time,951-63-2847,28,Male,TX,6,6,3.7,4,5000
+STU043,Fall 2024,Nursing,BSN,,Enrolled,Full Time,268-14-7531,22,Female,NY,12,12,3.8,4,8000
+STU044,Fall 2024,Arts & Sciences,BA in Communication,,Enrolled,Part Time,846-25-9371,44,Male,FL,3,3,3.4,3,2500
+STU045,Spring 2025,Business,BS in Business Administration,,Enrolled,Full Time,427-36-1947,31,Female,IL,12,12,4,5,8000
+STU046,Spring 2025,Technology,MS in Cybersecurity,,Enrolled,Part Time,531-47-2684,33,Male,WA,6,6,3.9,4,5500
+STU047,Spring 2025,Nursing,DNP,,Completed,Full Time,319-58-6247,47,Female,PA,6,6,4,5,4000
+STU048,Fall 2024,Business,MBA,,Enrolled,Part Time,204-69-1324,26,Male,GA,6,6,3.6,4,5000
+STU049,Fall 2024,Technology,BS in IT,Network Administration,Enrolled,Full Time,423-41-2341,35,Female,CO,12,12,3.7,4,8000
+STU050,Spring 2025,Arts & Sciences,BA in English,,Enrolled,Part Time,453-42-7564,51,Male,OH,3,3,3.5,3,2500
