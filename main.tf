@@ -261,11 +261,11 @@ resource "google_bigquery_job" "nobels_load" {
 
   load {
     source_uris = [
-      "gs://${var.gcp_project_id}/nobels.csv",
+      "gs://${var.project_id}/nobels.csv",
     ]
 
     destination_table {
-      project_id = var.gcp_project_id
+      project_id = var.project_id
       dataset_id = google_bigquery_dataset.sample_dataset.dataset_id
       table_id   = "nobels"
     }
@@ -285,7 +285,7 @@ resource "google_bigquery_job" "students_load" {
 
   load {
     source_uris = [
-      "gs://${var.gcp_project_id}/students.csv",
+      "gs://${var.project_id}/students.csv",
     ]
 
     destination_table {
