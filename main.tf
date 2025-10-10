@@ -289,7 +289,7 @@ resource "google_bigquery_job" "students_load" {
     ]
 
     destination_table {
-      project_id = var.gcp_project_id
+      project_id = var.project_id
       dataset_id = google_bigquery_dataset.sample_dataset.dataset_id
       table_id   = "students"
     }
