@@ -299,6 +299,6 @@ resource "google_bigquery_job" "students_load" {
     autodetect = true
   }
 
-*/
   depends_on = [ google_bigquery_dataset.sample_dataset, google_storage_bucket_object.students_object ]
 }
+*/
