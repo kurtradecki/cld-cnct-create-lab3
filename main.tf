@@ -226,7 +226,7 @@ resource "google_compute_subnetwork" "subnet1-vpc-hub1" {
  network       = google_compute_network.vpc.id
 }
 
-
+/*
 # --- Populate BQ Dataset ---
 resource "google_storage_bucket" "my_bucket" {
  name          = var.project_id
@@ -298,6 +298,7 @@ resource "google_bigquery_job" "students_load" {
     write_disposition = "WRITE_TRUNCATE"
     autodetect = true
   }
-  
+
+*/
   depends_on = [ google_bigquery_dataset.sample_dataset, google_storage_bucket_object.students_object ]
 }
