@@ -211,6 +211,7 @@ resource "google_compute_global_forwarding_rule" "forwarding_rule_http" {
 
 #  --- VPC --- 
 resource "google_compute_network" "vpc" {
+ project                         = var.project_id
  name                            = var.vpc_name
  auto_create_subnetworks         = false
  mtu                             = 1460
@@ -220,6 +221,7 @@ resource "google_compute_network" "vpc" {
 
 #  --- Subnet ---
 resource "google_compute_subnetwork" "subnet1-vpc-hub1" {
+ project       = var.project_id
  name          = var.subnet_name
  ip_cidr_range = "10.1.0.0/16"
  region        = var.gcp_region
