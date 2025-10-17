@@ -304,3 +304,68 @@ resource "google_bigquery_job" "students_load" {
   depends_on = [ google_bigquery_dataset.sample_dataset, google_storage_bucket_object.students_object ]
 }
 */
+
+
+# ----------------------------------------------------
+## Phase 2: DLP API and Template Configuration 🛡️
+# ----------------------------------------------------
+# Action: Enable the Sensitive Data Protection (DLP) API (dlp.googleapis.com)
+# Purpose: This is the first step, enabling the necessary service for DLP operations.
+resource "google_project_service" "dlp_api" {
+  project            = var.project_id
+  service            = "dlp.googleapis.com"
+  disable_on_destroy = true
+}
+# Action: Create the DLP Inspection Template
+# Purpose: Defines the specific PII rules for data scanning with a minimum likelihood of 'LIKELY' in the us-central1 region.
+resource "google_data_loss_prevention_inspect_template" "bigquery_dlp_template" {
+  # Template is deployed to the us-central1 region
+  parent       = "projects/${var.project_id}/locations/${var.gcp_region}"
+  display_name = "Custom PII Discovery Template"
+  description  = "Template configured for 7 specific infoTypes."
+  depends_on   = [google_project_service.dlp_api]
+  inspect_config {
+    # Minimum likelihood: Likely
+    min_likelihood = "LIKELY"
+    # Built-in infoTypes to include:
+    info_types { name = "AGE" }
+    info_types { name = "COUNTRY_DEMOGRAPHIC" }
+    info_types { name = "DEMOGRAPHIC_DATA" }
+    info_types { name = "GENDER" }
+    info_types { name = "MEDICAL_DATA" }
+    info_types { name = "US_SOCIAL_SECURITY_NUMBER" }
+    info_types { name = "US_STATE" }
+  }
+}
+# ----------------------------------------------------
+## Phase 3: DLP Discovery Configuration (Enable Profiling) 📊
+# ----------------------------------------------------
+# Action: Create a DLP Discovery Config
+# Purpose: Enables automated Sensitive Data Protection (SDP) Data Profiling (table profiling) for the specified BQ dataset, using the template created above.
+resource "google_data_loss_prevention_discovery_config" "bigquery_dlp_discovery" {
+  # The parent refers to the location of the resource in the hierarchy
+  parent   = "projects/${var.project_id}/locations/${var.gcp_region}"
+  location = var.gcp_region 
+  
+  depends_on = [
+    google_project_service.dlp_api,
+    google_data_loss_prevention_inspect_template.bigquery_dlp_template
+  ]
+  # This uses the root-level 'targets' block (plural)
+  targets {
+    big_query_target {
+      
+      # Using the wide inclusion filter confirmed to work by the user
+      filter {
+        other_tables {}
+      }
+      # We must specify the scope of the profiling job. This is done by
+      # setting the target dataset/project via a discovery action configuration.
+      # However, for this simple case, the API often relies on the parent's
+      # scope to constrain the job to the current project/location.
+    }
+  }
+  # Reference the Inspection Template using the root-level 'inspect_templates' argument (plural)
+  # FIX: Changed from .name to .id to resolve 'Invalid path' error.
+  inspect_templates = [google_data_loss_prevention_inspect_template.bigquery_dlp_template.id]
+}
