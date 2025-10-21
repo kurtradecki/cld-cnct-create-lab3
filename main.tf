@@ -320,7 +320,7 @@ resource "google_project_service" "dlp_api" {
 # Purpose: Defines the specific PII rules for data scanning with a minimum likelihood of 'LIKELY' in the us-central1 region.
 resource "google_data_loss_prevention_inspect_template" "bigquery_dlp_template" {
   # Template is deployed to the us-central1 region
-  parent       = "projects/${var.project_id}/locations/${var.gcp_region}"
+  parent   = "projects/${var.project_id}/locations/us"
   display_name = "Custom PII Discovery Template"
   description  = "Template configured for 7 specific infoTypes."
   depends_on   = [google_project_service.dlp_api]
@@ -344,8 +344,8 @@ resource "google_data_loss_prevention_inspect_template" "bigquery_dlp_template" 
 # Purpose: Enables automated Sensitive Data Protection (SDP) Data Profiling (table profiling) for the specified BQ dataset, using the template created above.
 resource "google_data_loss_prevention_discovery_config" "bigquery_dlp_discovery" {
   # The parent refers to the location of the resource in the hierarchy
-  parent   = "projects/${var.project_id}/locations/${var.gcp_region}"
-  location = var.gcp_region 
+  parent   = "projects/${var.project_id}/locations/us"
+  location = "us" 
   
   depends_on = [
     google_project_service.dlp_api,
